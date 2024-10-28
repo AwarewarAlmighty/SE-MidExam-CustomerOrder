@@ -260,51 +260,51 @@ class OrderProcessingSystem:
         self.create_widgets()
         
     def init_database(self):
-    conn = sqlite3.connect('order_system.db')
-    c = conn.cursor()
-    
-    # Drop existing tables to ensure clean schema
-    c.execute("DROP TABLE IF EXISTS order_detail")
-    c.execute("DROP TABLE IF EXISTS order_header")
-    c.execute("DROP TABLE IF EXISTS products")
-    
-    # Create products table with correct column name
-    c.execute('''CREATE TABLE IF NOT EXISTS products
-                (id INTEGER PRIMARY KEY,
-                 name TEXT NOT NULL,
-                 price REAL NOT NULL)''')
-    
-    # Create order_header table
-    c.execute('''CREATE TABLE IF NOT EXISTS order_header
-                (order_id INTEGER PRIMARY KEY,
-                 order_number TEXT NOT NULL,
-                 customer_ref TEXT,
-                 order_date DATE,
-                 total_amount REAL)''')
-    
-    # Create order_detail table with correct foreign key reference
-    c.execute('''CREATE TABLE IF NOT EXISTS order_detail
-                (detail_id INTEGER PRIMARY KEY,
-                 order_id INTEGER,
-                 product_id INTEGER,
-                 quantity INTEGER,
-                 price REAL,
-                 discount REAL,
-                 subtotal REAL,
-                 FOREIGN KEY (order_id) REFERENCES order_header (order_id),
-                 FOREIGN KEY (product_id) REFERENCES products (id))''')
-    
-    # Insert sample products if none exist
-    c.execute("SELECT COUNT(*) FROM products")
-    if c.fetchone()[0] == 0:
-        sample_products = [
-            (1, "BATTERY", 50000),
-            (2, "CHARGER", 100000),
-        ]
-        c.executemany("INSERT INTO products (id, name, price) VALUES (?,?,?)", sample_products)
-    
-    conn.commit()
-    conn.close()
+        conn = sqlite3.connect('order_system.db')
+        c = conn.cursor()
+        
+        # Drop existing tables to ensure clean schema
+        c.execute("DROP TABLE IF EXISTS order_detail")
+        c.execute("DROP TABLE IF EXISTS order_header")
+        c.execute("DROP TABLE IF EXISTS products")
+        
+        # Create products table with correct column name
+        c.execute('''CREATE TABLE IF NOT EXISTS products
+                    (id INTEGER PRIMARY KEY,
+                     name TEXT NOT NULL,
+                     price REAL NOT NULL)''')
+        
+        # Create order_header table
+        c.execute('''CREATE TABLE IF NOT EXISTS order_header
+                    (order_id INTEGER PRIMARY KEY,
+                     order_number TEXT NOT NULL,
+                     customer_ref TEXT,
+                     order_date DATE,
+                     total_amount REAL)''')
+        
+        # Create order_detail table with correct foreign key reference
+        c.execute('''CREATE TABLE IF NOT EXISTS order_detail
+                    (detail_id INTEGER PRIMARY KEY,
+                     order_id INTEGER,
+                     product_id INTEGER,
+                     quantity INTEGER,
+                     price REAL,
+                     discount REAL,
+                     subtotal REAL,
+                     FOREIGN KEY (order_id) REFERENCES order_header (order_id),
+                     FOREIGN KEY (product_id) REFERENCES products (id))''')
+        
+        # Insert sample products if none exist
+        c.execute("SELECT COUNT(*) FROM products")
+        if c.fetchone()[0] == 0:
+            sample_products = [
+                (1, "BATTERY", 50000),
+                (2, "CHARGER", 100000),
+            ]
+            c.executemany("INSERT INTO products (id, name, price) VALUES (?,?,?)", sample_products)
+        
+        conn.commit()
+        conn.close()
 
     
     def load_products(self):
